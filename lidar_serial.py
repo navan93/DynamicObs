@@ -16,12 +16,12 @@ def getscan(start,end,cluster):
 	scan_int   = "%01d"%0
 	num_scans  = "%02d"%1
 	lf         = '\x0a'
-	data = struct.pack('16s',"MD",start_step,end_step,cluster,scan_int,num_scans,lf)
+	data = struct.pack('16s',"MD"+start_step+end_step+cluster+scan_int+num_scans+lf)
 	print data
 	port.write(data)
 
 	resp1 = port.read(21)
-	#print binascii.b2a_hex(resp1)
+#	print binascii.b2a_hex(resp1)
 
 	steps 	 = end-start+1
 	data_len = steps*3
@@ -30,28 +30,29 @@ def getscan(start,end,cluster):
 
 	if data_len<64:
 		final_data_len = 29 + data_len
-	if quo!=0 and rem==0
+	if quo!=0 and rem==0:
 		final_data_len = 27 + 66*quo
-	if quo!=0 and rem!=0
+	if quo!=0 and rem!=0:
 		final_data_len = 27 + 66*quo + rem + 2
 
 	resp2 = port.read(final_data_len)
-	lines=resp2[26:-1].splitlines()
-	a = list()
+	#print binascii.hexlify(resp2)
+	lines= resp2[26:-1].splitlines()
+	#print len(lines)
+	a=list()
 	for line in lines:
-		del line[-1]
+		line=line[:-1]
+		#print len(line)
 		a+= list(struct.unpack(str(len(line))+'B',line))
-	dec = [48]*len(a)
-	res=map(sub,a,dec)
 	
-	print res
-	length=len(res)/3
+	dec = [48]*len(a)
+	res_dists = map(sub,a,dec)
+	length=len(res_dists)/3
 	dists=[0]*length
 	for i in range(length):
-		dists[i]=int(bin(res[i*3+0])[2:].zfill(6)+bin(res[i*3+1])[2:].zfill(6)+bin(res[i*3+2])[2:].zfill(6),2)
+		dists[i]=int(bin(res_dists[i*3+0])[2:].zfill(6)+bin(res_dists[i*3+1])[2:].zfill(6)+bin(res_dists[i*3+2])[2:].zfill(6),2)
+	
 	print dists
+
 getscan(44,725,1)
 port.close()
-
-
-
