@@ -20,7 +20,7 @@ port.open()
 port.flush()
 
 def getscan(start,end,cluster):
-
+	start_time=time.time()
 	start_step = "%04d"%start
 	end_step   = "%04d"%end
 	cluster    = "%02d"%cluster
@@ -64,7 +64,7 @@ def getscan(start,end,cluster):
 	for i in range(length):
 		dists[i]=int(bin(res_dists[i*3+0])[2:].zfill(6)+bin(res_dists[i*3+1])[2:].zfill(6)+bin(res_dists[i*3+2])[2:].zfill(6),2)
 	#print dists
-	print dists
+	#print dists
 
 	X=list()
 	Y=list()
@@ -94,7 +94,8 @@ def getscan(start,end,cluster):
 	
 	
 	db = DBSCAN(eps=200, min_samples=10).fit(Z)
-	
+	end_time=time.time()
+
 	core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
 	
 	core_samples_mask[db.core_sample_indices_] = True
@@ -107,12 +108,13 @@ def getscan(start,end,cluster):
 	# Number of clusters in labels, ignoring noise if present.
 	n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 	print n_clusters_
+	print "time taken:",end_time-start_time
 	
 	
 
 
 	unique_labels = set(labels)
-	
+	plt.figure(0)
 	colors = plt.cm.Spectral(np.linspace(0, 1, len(unique_labels)))
 	C={}
 	for k, col in zip(unique_labels, colors):
@@ -122,21 +124,22 @@ def getscan(start,end,cluster):
 		class_member_mask = (labels == k)
 		
 		xy1 = A[class_member_mask & core_samples_mask]
-		plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=14)
+		plt.plot(xy1[:, 0], xy1[:, 1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=10)
 		
 		xy2 = A[class_member_mask & ~core_samples_mask]
-		plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=6)
-		C[k]=np.concatenate(xy1,xy2)
+		plt.plot(xy2[:, 0], xy2[:, 1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=6)
+		C[k]=np.append(xy1,xy2,axis=0)
 	
 	plt.title('Estimated number of clusters: %d' % n_clusters_)
-	 
+	#print C
 	
-	plt.plot(Z[:,0],Z[:,1],'r.')
+	#plt.plot(Z[:,0],Z[:,1],'r.')
 	
 	plt.show()
 	
 
 getscan(127,640,1)
+
 port.close()
 
 

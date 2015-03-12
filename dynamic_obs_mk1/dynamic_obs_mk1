@@ -1,0 +1,8 @@
+import lidar
+import clustering
+import time
+
+dists = lidar.getscan(129,640,1) 
+tstamp=time.time()
+
+C=clustering.meanshift(dists,tstamp)

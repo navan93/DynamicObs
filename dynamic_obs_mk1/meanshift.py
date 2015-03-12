@@ -25,6 +25,7 @@ import lidar
 np.set_printoptions(threshold=np.nan,precision=4,suppress=True)
 
 Z=list()
+C={}
 
 def meanshift():
 	
@@ -33,7 +34,7 @@ def meanshift():
 	global Z
 
 	dists = lidar.getscan(129,640,1)
-
+	tstamp=time.time()
 	theta=0
 	for r in dists:
 		if r<10 or r>2000:
@@ -50,8 +51,10 @@ def meanshift():
 	#print "bandwidth:",bandwidth
 	
 	ms = MeanShift(bandwidth=600, bin_seeding=True,cluster_all=True)
-	ms.fit(Z)
-	
+	try:
+		ms.fit(Z)
+	except:
+		return 'fail'
 	
 	labels = ms.labels_
 	cluster_centers = ms.cluster_centers_
@@ -59,28 +62,17 @@ def meanshift():
 	labels_unique = np.unique(labels)
 	n_clusters_ = len(labels_unique) - (1 if -1 in labels else 0)
 	
+	for k in labels_unique:
+		my_members = labels == k
+		cluster_center = cluster_centers[k]
+		cords=Z[my_members]
+		C[k]={'center':cluster_center,'cords':cords,'xmin':cords[cords.argmin(axis=0)[0]],'xmax':cords[cords.argmax(axis=0)[0]],'flag':0,'tstamp':tstamp}
+	print C
 	print("number of estimated clusters : %d" % n_clusters_)
 	
 	
 	
-	###############################################################################
-	# Plot result
-	import matplotlib.pyplot as plt
-	from itertools import cycle
 	
-	plt.figure(1)
-	plt.clf()
-	
-	colors = plt.cm.Spectral(np.linspace(0, 1, len(labels_unique)))
-	for k, col in zip(labels_unique, colors):
-	    my_members = labels == k
-	    	    
-	    cluster_center = cluster_centers[k]
-	    
-	    plt.plot(Z[my_members, 0], Z[my_members, 1], 'o', markerfacecolor=col,markeredgecolor='k',markersize=5)
-	    plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=14)
-	plt.title('Estimated number of clusters: %d' % n_clusters_)
-	plt.show()
 
 meanshift()
 
