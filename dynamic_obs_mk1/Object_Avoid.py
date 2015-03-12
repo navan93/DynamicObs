@@ -34,5 +34,8 @@ def avoid(C1,C2):
 		dw=a*(math.radians((alpha-beta)))*v/d
 	vr=(2*vb+dw*0.25)/2
 	vl=(2*vb-dw*0.25)/2
-	print 'vr=',vr,'vl=',vl
 
+	vr*=256
+	vl*=256
+	print 'vr=',vr,'vl=',vl
+	return vl,vr

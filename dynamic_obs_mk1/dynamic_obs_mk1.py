@@ -3,6 +3,7 @@ import clustering
 import time
 import plotter
 import Object_Avoid
+import firebird
 
 dists = lidar.getscan(129,640,1) 
 tstamp=time.time()
@@ -22,7 +23,8 @@ while 1:
 		#plotter.plot(C2)
 	#ime.sleep(5)
 	if C1!='fail' and C2!='fail':
-		Object_Avoid.avoid(C1[0],C2[0])
+		vl,vr = Object_Avoid.avoid(C1[0],C2[0])
+		firebird.move(vl,vr)
 	else:
 		print 'no objects in range'
 	C1=C2
