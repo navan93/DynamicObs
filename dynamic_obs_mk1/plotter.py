@@ -17,7 +17,6 @@ def plot(C):
 		    plt.plot(C[k]['center'][0],C[k]['center'][1], 'o', markerfacecolor=col,markeredgecolor='k', markersize=14)
 		
 		plt.title('Estimated number of clusters: %d' % len(C))
-
 		plt.draw()
 
 	

@@ -8,6 +8,9 @@ import subprocess
 
 output=subprocess.Popen(["dmesg"],stdout=subprocess.PIPE).communicate()[0]
 output=output.split("\n")[::-1]
+
+st='ttyACM0'
+
 for i in range(len(output)):
 	if output[i].find("Manufacturer: Hokuyo Data Flex for USB")!=-1:
 		st=output[i-1]

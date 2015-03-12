@@ -1,17 +1,3 @@
-"""
-=============================================
-A demo of the mean-shift clustering algorithm
-=============================================
-
-Reference:
-
-Dorin Comaniciu and Peter Meer, "Mean Shift: A robust approach toward
-feature space analysis". IEEE Transactions on Pattern Analysis and
-Machine Intelligence. 2002. pp. 603-619.
-
-"""
-print(__doc__)
-
 import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
 import math
@@ -60,6 +46,7 @@ def meanshift(dists,tstamp,range=2000):
 		cluster_center = cluster_centers[k]
 		cords=Z[my_members]
 		C[k]={'center':cluster_center,'cords':cords,'xmin':cords[cords.argmin(axis=0)[0]],'xmax':cords[cords.argmax(axis=0)[0]],'flag':0,'tstamp':tstamp}
+	
 	return C
 
 
